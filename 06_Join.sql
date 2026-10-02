@@ -299,5 +299,28 @@ SELECT
     ISNULL(CONVERT(VARCHAR(5), OraInizio, 108), 'N/D') AS Ora
 FROM Lezioni;
 
+----------------------------------------------------------------------------------
+/*
+    RIGHT JOIN
+    Fa il contrario della "LEFT JOIN"
+    Restituisce tutti i record della tabella destra
+*/
+SELECT 
+    st.Nome + ' ' + st.Cognome as [Nome Completo dello Studente],
+    st.CodiceFiscale as CF,
+    ISNULL(CONVERT(VARCHAR, i.DataIscrizione, 105), 'Data non definita') AS [Data Iscrizione]
+FROM Studenti st
+RIGHT JOIN Iscrizioni i
+    ON i.StudenteId = st.StudenteId;
 
+    ---------------------------------------------------------------------------------------------------------------------------
+    /* 
+
+Caratteristica       	  IS NULL                                   ISNULL()
+Cosa è      	     Operatore standard SQL           	      Funzione specifica (principalmente T-SQL / SQL Server)
+Scopo principale     Verificare se un campo è vuoto/nullo 	  Sostituire un valore nullo con un valore alternativo
+Dove si usa  	     Di solito nella clausola WHERE	          Di solito nella clausola SELECT o WHERE per manipolare il dato
+Sintassi	         colonna IS NULL	                      ISNULL(colonna, valore_alternativo)
+
+*/-------------------------------------------------------------------------------------------------------------------------------
 
