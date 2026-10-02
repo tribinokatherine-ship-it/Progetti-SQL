@@ -85,18 +85,9 @@ GROUP BY s.Nome, s.Cognome, s.DataNascita, s.CodiceFiscale, c.NomeCorso, d.Nome,
 
 
 -- Esercizio 3
-
-/* 
-   1 Mostrare gli studenti che hanno preso un voto maggiore o uguale a 28 in qualsiasi corso.
-
-   2 Mostrare gli studenti che non sono iscritti a nessun corso.
-
-   3 Mostrare i corsi che non hanno studenti iscritti.
-
-   4 Con Full JOIN  Mostrare studenti e voti, anche se non corrispondono
-
-*/ 
- --1.
+ 
+  
+ --1 Mostrare gli studenti che hanno preso un voto maggiore o uguale a 28 in qualsiasi corso.
 
  SELECT s.StudenteId, s.Nome, s.Cognome, s.DataNascita, s.Email, s.Telefono, s.CodiceFiscale
 FROM Studenti s
@@ -115,7 +106,7 @@ WHERE v.Voto >= 28
 ORDER BY s.StudenteId ASC; -- Ordina semplicemente per l'identificativo univoco dello studente
 
 
----2
+---2 Mostrare gli studenti che non sono iscritti a nessun corso.
 SELECT s.StudenteId, s.Nome, s.Cognome, s.DataNascita, s.Email, s.Telefono, s.CodiceFiscale
 FROM Studenti s
      LEFT JOIN Iscrizioni i 
@@ -124,7 +115,7 @@ WHERE i.StudenteId IS NULL
 ORDER BY s.Cognome ASC, s.Nome ASC; -- Dalla A alla Z
 
 
----3
+--- 3 Mostrare i corsi che non hanno studenti iscritti.
 SELECT c.CorsoId, c.NomeCorso, c.Descrizione, c.Crediti, c.Durata
 FROM Corsi c
      JOIN Iscrizioni i
@@ -132,8 +123,23 @@ FROM Corsi c
      WHERE i.CorsoId IS NULL
      ORDER BY c.NomeCorso ASC; -- Dalla A alla Z per nome del corso
 
----4
-SELECt  s.StudenteId, s.Nome, s.Cognome, v.CorsoId, v.Voto
+-- seconda opzione fatta di Clevetta
+SELECT
+    CONCAT(s.Nome, ' ', s.Cognome) AS Nome,
+   ISNULL(c.CorsoId, 0) AS ID,
+  ISNULL(c.NomeCorso, 'Non definita') AS Corso,
+   ISNULL(c.Crediti, 0) AS Crediti,
+    ISNULL(c.Durata,0) As Durata
+FROM Studenti AS s
+LEFT JOIN Iscrizioni AS i
+    ON s.StudenteId = i.StudenteId
+LEFT JOIN Corsi AS c
+    ON c.CorsoId= i.CorsoId
+WHERE i.CorsoId IS NULL;
+
+---4 Con Full JOIN  Mostrare studenti e voti, anche se non corrispondono
+SELECt  s.StudenteId, s.Nome, s.Cognome, v.CorsoId, 
+      ISNULL(v.Voto, 0) AS Voto
 FROM Studenti s
 FULL OUTER JOIN Voti v
            ON s.StudenteId = v.StudenteId
@@ -142,3 +148,14 @@ FULL OUTER JOIN Voti v
     
 
 
+    SELECT 
+    ISNULL(c.NomeCorso, 'Non defuinito') AS Corso,
+    CAST(ISNULL(c.Crediti, 0) as INT) as Crediti,
+    CAST(ISNULL(c.Durata,  0) as INT) as Durata
+FROM Studenti s 
+LEFT JOIN Iscrizioni i
+    ON i.StudenteId = s.StudenteId
+LEFT JOIN Corsi c
+    ON c.CorsoId = i.CorsoId
+WHERE c.CorsoId IS NOT NULL
+ORDER by s.Nome ASC;
